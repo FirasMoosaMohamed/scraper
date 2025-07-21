@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"  # RabbitMQ Dashboard
+
+  scraper:
+    build:
+      context: ./scrape
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./job.json:/app/job.json
+
+  consumer:
+    build:
+      context: ./consumer
+    depends_on:
+      - rabbitmq
